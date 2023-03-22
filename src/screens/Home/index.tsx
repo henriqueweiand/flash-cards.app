@@ -3,7 +3,7 @@ import { Container, Title } from "./style";
 export function Home() {
   return (
     <Container>
-      <Title>Home2</Title>
+      <Title>Home22</Title>
     </Container>
   );
 }
