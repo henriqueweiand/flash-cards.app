@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "yourscheme",
     "name": "flashcardsapp",
     "slug": "flashcardsapp",
     "version": "1.0.0",
