@@ -7,8 +7,10 @@ import { RegisterWord } from '@screens/RegisterWord';
 import { GameOption } from '@screens/GameOptions';
 import { GameTranslate } from '@screens/GameTranslate';
 import { GameSelect } from '@screens/GameSelect';
+import { Games } from '@screens/Games';
 
 type AppRoutes = {
+    games: undefined;
     gameSelect: undefined;
     gameTranslate: undefined;
     registerWord: undefined;
@@ -39,6 +41,16 @@ export function AppRoutes() {
                 paddingTop: sizes[6]
             }
         }}>
+            <Screen
+                name='games'
+                component={Games}
+                options={{
+                    tabBarIcon: ({ color }) => (
+                        <Ionicons name="home-outline" size={iconSize} color={color} />
+                    )
+                }}
+            />
+
             <Screen
                 name='gameSelect'
                 component={GameSelect}
