@@ -4,9 +4,15 @@ import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { RegisterWord } from '@screens/RegisterWord';
+import { GameOption } from '@screens/GameOptions';
+import { GameTranslate } from '@screens/GameTranslate';
+import { GameSelect } from '@screens/GameSelect';
 
 type AppRoutes = {
+    gameSelect: undefined;
+    gameTranslate: undefined;
     registerWord: undefined;
+    gameOption: undefined;
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -33,6 +39,24 @@ export function AppRoutes() {
                 paddingTop: sizes[6]
             }
         }}>
+            <Screen
+                name='gameSelect'
+                component={GameSelect}
+                options={{ tabBarButton: () => null }}
+            />
+
+            <Screen
+                name='gameTranslate'
+                component={GameTranslate}
+                options={{ tabBarButton: () => null }}
+            />
+
+            <Screen
+                name='gameOption'
+                component={GameOption}
+                options={{ tabBarButton: () => null }}
+            />
+
             <Screen
                 name='registerWord'
                 component={RegisterWord}
