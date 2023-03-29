@@ -1,19 +1,34 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { Box, Button, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, ScrollView } from "native-base";
-import { useState } from "react";
-import { auth } from '../config/firebase';
 import { useNavigation } from "@react-navigation/native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, VStack } from "native-base";
+import { useState } from "react";
+
+import { auth } from '@providers/database/firebase';
+import { AsyncStorageApp } from "@providers/async-storage";
 
 export function SignIn() {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: ''
+  });
 
-  const onHandleLogin = () => {
+  const handleSignIn = async () => {
+    const { email, password } = credentials;
+
     if (email !== "" && password !== "") {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => console.log("Login success"))
-        .catch((err) => console.log("Login error", err.message));
+      const asyncStorage = new AsyncStorageApp();
+
+      try {
+        const authResponse = await signInWithEmailAndPassword(auth, email, password);
+
+        console.log(authResponse);
+        // asyncStorage.setItem('auth', auth);
+        // handleGoSignUp()
+      } catch (e) {
+        console.log(e);
+        // Add toast
+      }
     }
   };
 
@@ -21,7 +36,12 @@ export function SignIn() {
     navigation.navigate('signUp');
   }
 
-  const onChange = (e) => console.log(e);
+  const onChange = (field: string, value: string) => {
+    setCredentials(e => ({
+      ...e,
+      [field]: value,
+    }))
+  }
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -42,15 +62,15 @@ export function SignIn() {
             <VStack space={3} mt="5">
               <FormControl>
                 <FormControl.Label>Email ID</FormControl.Label>
-                <Input onChangeText={onChange} />
+                <Input onChangeText={(e) => onChange('email', e)} />
               </FormControl>
 
               <FormControl>
                 <FormControl.Label>Password</FormControl.Label>
-                <Input type="password" onChangeText={onChange} />
+                <Input type="password" onChangeText={(e) => onChange('password', e)} />
               </FormControl>
 
-              <Button mt="2" colorScheme="indigo">
+              <Button mt="2" colorScheme="indigo" onPress={handleSignIn}>
                 Sign in
               </Button>
 
