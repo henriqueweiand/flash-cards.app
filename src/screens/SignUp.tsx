@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { Alert, Box, Button, Center, FormControl, Heading, Input, ScrollView, VStack } from "native-base";
+import { Alert, Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, VStack } from "native-base";
 import { useState } from "react";
 import { auth } from '../config/firebase';
 
@@ -66,6 +66,14 @@ export function SignUp() {
               </Button>
 
             </VStack>
+            <HStack mt="6" justifyContent="center">
+              <Button
+                variant="ghost"
+                onPress={handleGoSignIn}
+              >
+                Sign In
+              </Button>
+            </HStack>
           </Box>
         </Center>
       </VStack>

@@ -1,4 +1,4 @@
-import { Box, HStack, ScrollView, Text, VStack } from "native-base";
+import { Button, HStack, ScrollView, Text, VStack } from "native-base";
 
 export function GameOption() {
   return (
@@ -12,9 +12,9 @@ export function GameOption() {
         <HStack display={"flex"} flexDir={"column"} pt={5}>
           {
             [1, 2, 3, 4].map((key) => (
-              <Box key={key} minW={120} flex={1} padding={5} mt={1} background={"amber.100"} textAlign={"center"}>
+              <Button key={key} minW={120} flex={1} padding={5} mt={1} variant="outline" textAlign={"center"}>
                 <Text>Option {key}</Text>
-              </Box>
+              </Button>
             ))
           }
         </HStack>
