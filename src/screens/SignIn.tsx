@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { Box, Button, Center, FormControl, Heading, HStack, Input, Link, VStack, Text } from "native-base";
+import { Box, Button, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, ScrollView } from "native-base";
 import { useState } from "react";
 import { auth } from '../config/firebase';
 import { useNavigation } from "@react-navigation/native";
@@ -18,51 +18,55 @@ export function SignIn() {
   };
 
   const handleGoSignUp = () => {
-    navigation.navigate('SignUp');
+    navigation.navigate('signUp');
   }
 
   const onChange = (e) => console.log(e);
 
   return (
-    <Center w="100%">
-      <Box safeArea p="2" py="8" w="90%" maxW="290">
-        <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
-          color: "warmGray.50"
-        }}>
-          Welcome
-        </Heading>
-        <Heading mt="1" _dark={{
-          color: "warmGray.200"
-        }} color="coolGray.600" fontWeight="medium" size="xs">
-          Sign in to continue!
-        </Heading>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+      <VStack justifyContent={"center"} flex={1} px={10} pb={16}>
+        <Center w="100%">
+          <Box safeArea p="2" py="8" w="90%" maxW="290">
+            <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
+              color: "warmGray.50"
+            }}>
+              Welcome
+            </Heading>
+            <Heading mt="1" _dark={{
+              color: "warmGray.200"
+            }} color="coolGray.600" fontWeight="medium" size="xs">
+              Sign in to continue!
+            </Heading>
 
-        <VStack space={3} mt="5">
-          <FormControl>
-            <FormControl.Label>Email ID</FormControl.Label>
-            <Input onChangeText={onChange} />
-          </FormControl>
+            <VStack space={3} mt="5">
+              <FormControl>
+                <FormControl.Label>Email ID</FormControl.Label>
+                <Input onChangeText={onChange} />
+              </FormControl>
 
-          <FormControl>
-            <FormControl.Label>Password</FormControl.Label>
-            <Input type="password" onChangeText={onChange} />
-          </FormControl>
+              <FormControl>
+                <FormControl.Label>Password</FormControl.Label>
+                <Input type="password" onChangeText={onChange} />
+              </FormControl>
 
-          <Button mt="2" colorScheme="indigo">
-            Sign in
-          </Button>
+              <Button mt="2" colorScheme="indigo">
+                Sign in
+              </Button>
 
-          <HStack mt="6" justifyContent="center">
-            <Button
-              variant="outline"
-              onPress={handleGoSignUp}
-            >
-              Sign Up
-            </Button>
-          </HStack>
-        </VStack>
-      </Box>
-    </Center>
+              <HStack mt="6" justifyContent="center">
+                <Button
+                  variant="ghost"
+                  onPress={handleGoSignUp}
+                >
+                  Sign Up
+                </Button>
+              </HStack>
+            </VStack>
+          </Box>
+        </Center>
+      </VStack>
+    </ScrollView>
   );
 }
 
