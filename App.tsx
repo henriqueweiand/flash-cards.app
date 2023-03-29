@@ -1,8 +1,8 @@
-import { StatusBar } from "react-native";
-import { NativeBaseProvider } from "native-base";
+import { NativeBaseProvider } from 'native-base';
+import { StatusBar } from 'react-native';
 
-import { THEME } from "./src/theme";
-import { Routes } from "@routes/index";
+import { Routes } from '@routes/index';
+import { THEME } from './src/theme';
 
 export default function App() {
   return (
