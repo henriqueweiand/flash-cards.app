@@ -1,10 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, VStack } from "native-base";
 import { useState } from "react";
 
-import { auth } from '@providers/database/firebase';
-import { AuthAsyncStorage } from "@providers/async-storage";
+import { AuthFirebase } from "@core/services/AuthFirebase";
+import { AuthAsyncStorage } from "@services/AuthAsyncStorage";
 
 export function SignIn() {
   const navigation = useNavigation();
@@ -17,13 +16,14 @@ export function SignIn() {
     const { email, password } = credentials;
 
     if (email !== "" && password !== "") {
+      const authFirebase = new AuthFirebase();
       const authAsyncStorage = new AuthAsyncStorage();
 
       try {
-        const authResponse = await signInWithEmailAndPassword(auth, email, password);
+        const authResponse = await authFirebase.signin({ email, password });
 
         console.log(authResponse);
-        // authAsyncStorage.set(auth);
+        // authAsyncStorage.set(authResponse);
         // handleGoSignUp()
       } catch (e) {
         console.log(e);

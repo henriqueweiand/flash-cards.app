@@ -1,23 +1,44 @@
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Alert, Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, VStack } from "native-base";
 import { useState } from "react";
 
-import { auth } from '@providers/database/firebase';
+import { AuthFirebase } from '@core/services/AuthFirebase';
+import { AuthAsyncStorage } from '@services/AuthAsyncStorage';
 
 export function SignUp() {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('henriqueweiand@gmail.com');
-  const [password, setPassword] = useState('Abc12345');
-  const [repassword, setRepassword] = useState('');
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+    repassword: ''
+  });
 
-  const onHandleSignup = () => {
-    if (email !== '' && password !== '') {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => console.log('Signup success'))
-        .catch((err) => console.log("SignIn error", err));
+  const handleSignIn = async () => {
+    const { email, password, repassword } = credentials;
+
+    if (email !== "" && password !== "" && password === repassword) {
+      const authFirebase = new AuthFirebase();
+      const authAsyncStorage = new AuthAsyncStorage();
+
+      try {
+        const authResponse = await authFirebase.signup({ email, password });
+
+        console.log(authResponse);
+        // authAsyncStorage.set(auth);
+        // handleGoSignIn()
+      } catch (e) {
+        console.log(e);
+        // Add toast
+      }
     }
   };
+
+  const onChange = (field: string, value: string) => {
+    setCredentials(e => ({
+      ...e,
+      [field]: value,
+    }))
+  }
 
   const handleGoSignIn = () => {
     navigation.navigate('signIn');
@@ -44,25 +65,25 @@ export function SignUp() {
             <VStack space={3} mt="5">
               <FormControl>
                 <FormControl.Label>Email</FormControl.Label>
-                <Input onChange={(e) => setEmail(e)} />
+                <Input onChangeText={(e) => onChange('email', e)} />
               </FormControl>
 
               <FormControl>
                 <FormControl.Label>Password</FormControl.Label>
-                <Input type="password" onChange={(e) => setPassword(e)} />
+                <Input type="password" onChangeText={(e) => onChange('password', e)} />
               </FormControl>
 
               <FormControl>
                 <FormControl.Label>Confirm Password</FormControl.Label>
-                <Input type="password" onChange={(e) => setRepassword(e)} />
+                <Input type="password" onChangeText={(e) => onChange('repassword', e)} />
               </FormControl>
 
               {
-                password !== repassword && <Alert>The passwords are different</Alert>
+                credentials.password !== credentials.repassword && <Alert>The passwords are different</Alert>
               }
 
               <Button mt="2"
-                onPress={onHandleSignup} colorScheme="indigo">
+                onPress={handleSignIn} colorScheme="indigo">
                 Sign up
               </Button>
 
