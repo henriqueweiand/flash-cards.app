@@ -1,11 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import { Alert, Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, VStack } from "native-base";
+import { Alert, Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, useToast, VStack } from "native-base";
 import { useState } from "react";
 
-import { AuthFirebase } from '@core/services/AuthFirebase';
-import { AuthAsyncStorage } from '@services/AuthAsyncStorage';
+import { ToastAlert } from '@components/ToastAlert';
+import { AuthFirebase } from '@services/AuthFirebase';
 
 export function SignUp() {
+  const toast = useToast();
   const navigation = useNavigation();
   const [credentials, setCredentials] = useState({
     email: '',
@@ -18,18 +19,29 @@ export function SignUp() {
 
     if (email !== "" && password !== "" && password === repassword) {
       const authFirebase = new AuthFirebase();
-      const authAsyncStorage = new AuthAsyncStorage();
 
       try {
-        const authResponse = await authFirebase.signup({ email, password });
+        await authFirebase.signup({ email, password });
 
-        console.log(authResponse);
-        // authAsyncStorage.set(auth);
-        // handleGoSignIn()
+        toast.show({
+          render: () => {
+            return <ToastAlert title="Account was created" />;
+          }
+        });
+        handleGoSignIn();
       } catch (e) {
-        console.log(e);
-        // Add toast
+        toast.show({
+          render: () => {
+            return <ToastAlert title="Was not possible to make the signup" />;
+          }
+        });
       }
+    } else {
+      toast.show({
+        render: () => {
+          return <ToastAlert title="You have to fill the form out" />;
+        }
+      });
     }
   };
 

@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential, } from 'firebase/auth';
 import { Firebase } from '@core/init';
 
 export class AuthFirebase {

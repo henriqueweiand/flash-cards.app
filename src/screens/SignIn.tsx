@@ -1,12 +1,16 @@
 import { useNavigation } from "@react-navigation/native";
-import { Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, VStack } from "native-base";
+import { Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, useToast, VStack } from "native-base";
 import { useState } from "react";
 
-import { AuthFirebase } from "@core/services/AuthFirebase";
-import { AuthAsyncStorage } from "@services/AuthAsyncStorage";
+import { ToastAlert } from "@components/ToastAlert";
+import { useAuth } from "@hooks/Auth";
+import { AuthFirebase } from "@services/AuthFirebase";
 
 export function SignIn() {
   const navigation = useNavigation();
+  const toast = useToast();
+  const { set: authSet } = useAuth();
+
   const [credentials, setCredentials] = useState({
     email: '',
     password: ''
@@ -15,20 +19,25 @@ export function SignIn() {
   const handleSignIn = async () => {
     const { email, password } = credentials;
 
-    if (email !== "" && password !== "") {
+    if (email !== "" && password !== "" && password.length >= 6) {
       const authFirebase = new AuthFirebase();
-      const authAsyncStorage = new AuthAsyncStorage();
 
       try {
-        const authResponse = await authFirebase.signin({ email, password });
-
-        console.log(authResponse);
-        // authAsyncStorage.set(authResponse);
-        // handleGoSignUp()
+        const { user } = await authFirebase.signin({ email, password });
+        authSet(user);
       } catch (e) {
-        console.log(e);
-        // Add toast
+        toast.show({
+          render: () => {
+            return <ToastAlert title="Was not possible to make the singin" />;
+          }
+        });
       }
+    } else {
+      toast.show({
+        render: () => {
+          return <ToastAlert title="Was not possible to submit" description="You have to fill the form out and the password must have more than 5 words" />;
+        }
+      });
     }
   };
 

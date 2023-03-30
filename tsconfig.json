@@ -19,6 +19,15 @@
       "@providers/*": [
         "./src/core/providers/*"
       ],
+      "@domain/*": [
+        "./src/core/domain/*"
+      ],
+      "@hooks/*": [
+        "./src/core/hooks/*"
+      ],
+      "@context/*": [
+        "./src/core/context/*"
+      ],
       "@routes/*": [
         "./src/routes/*"
       ]
