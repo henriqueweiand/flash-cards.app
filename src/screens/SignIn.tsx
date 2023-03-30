@@ -4,7 +4,7 @@ import { Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, V
 import { useState } from "react";
 
 import { auth } from '@providers/database/firebase';
-import { AsyncStorageApp } from "@providers/async-storage";
+import { AuthAsyncStorage } from "@providers/async-storage";
 
 export function SignIn() {
   const navigation = useNavigation();
@@ -17,13 +17,13 @@ export function SignIn() {
     const { email, password } = credentials;
 
     if (email !== "" && password !== "") {
-      const asyncStorage = new AsyncStorageApp();
+      const authAsyncStorage = new AuthAsyncStorage();
 
       try {
         const authResponse = await signInWithEmailAndPassword(auth, email, password);
 
         console.log(authResponse);
-        // asyncStorage.setItem('auth', auth);
+        // authAsyncStorage.set(auth);
         // handleGoSignUp()
       } catch (e) {
         console.log(e);
