@@ -1,19 +1,43 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { Box, Button, Center, FormControl, Heading, HStack, Input, Link, VStack, Text, ScrollView } from "native-base";
-import { useState } from "react";
-import { auth } from '../config/firebase';
 import { useNavigation } from "@react-navigation/native";
+import { Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, useToast, VStack } from "native-base";
+import { useState } from "react";
+
+import { ToastAlert } from "@components/ToastAlert";
+import { useAuth } from "@hooks/Auth";
+import { AuthFirebase } from "@services/AuthFirebase";
 
 export function SignIn() {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const toast = useToast();
+  const { set: authSet } = useAuth();
 
-  const onHandleLogin = () => {
-    if (email !== "" && password !== "") {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => console.log("Login success"))
-        .catch((err) => console.log("Login error", err.message));
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleSignIn = async () => {
+    const { email, password } = credentials;
+
+    if (email !== "" && password !== "" && password.length >= 6) {
+      const authFirebase = new AuthFirebase();
+
+      try {
+        const { user } = await authFirebase.signin({ email, password });
+        authSet(user);
+      } catch (e) {
+        toast.show({
+          render: () => {
+            return <ToastAlert title="Was not possible to make the singin" />;
+          }
+        });
+      }
+    } else {
+      toast.show({
+        render: () => {
+          return <ToastAlert title="Was not possible to submit" description="You have to fill the form out and the password must have more than 5 words" />;
+        }
+      });
     }
   };
 
@@ -21,7 +45,12 @@ export function SignIn() {
     navigation.navigate('signUp');
   }
 
-  const onChange = (e) => console.log(e);
+  const onChange = (field: string, value: string) => {
+    setCredentials(e => ({
+      ...e,
+      [field]: value,
+    }))
+  }
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -42,15 +71,15 @@ export function SignIn() {
             <VStack space={3} mt="5">
               <FormControl>
                 <FormControl.Label>Email ID</FormControl.Label>
-                <Input onChangeText={onChange} />
+                <Input onChangeText={(e) => onChange('email', e)} />
               </FormControl>
 
               <FormControl>
                 <FormControl.Label>Password</FormControl.Label>
-                <Input type="password" onChangeText={onChange} />
+                <Input type="password" onChangeText={(e) => onChange('password', e)} />
               </FormControl>
 
-              <Button mt="2" colorScheme="indigo">
+              <Button mt="2" colorScheme="indigo" onPress={handleSignIn}>
                 Sign in
               </Button>
 

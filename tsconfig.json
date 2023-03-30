@@ -4,11 +4,8 @@
     "strict": true,
     "baseUrl": "./",
     "paths": {
-      "@dtos/*": [
-        "src/dtos/*"
-      ],
-      "@assets/*": [
-        "./src/assets/*"
+      "@core/*": [
+        "./src/core/*"
       ],
       "@components/*": [
         "./src/components/*"
@@ -16,20 +13,20 @@
       "@screens/*": [
         "./src/screens/*"
       ],
-      "@storage/*": [
-        "./src/storage/*"
-      ],
-      "@utils/*": [
-        "./src/utils/*"
-      ],
       "@services/*": [
-        "./src/services/*"
+        "./src/core/services/*"
+      ],
+      "@providers/*": [
+        "./src/core/providers/*"
+      ],
+      "@domain/*": [
+        "./src/core/domain/*"
       ],
       "@hooks/*": [
-        "./src/hooks/*"
+        "./src/core/hooks/*"
       ],
-      "@contexts/*": [
-        "./src/contexts/*"
+      "@context/*": [
+        "./src/core/context/*"
       ],
       "@routes/*": [
         "./src/routes/*"

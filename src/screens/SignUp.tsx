@@ -1,22 +1,56 @@
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { Alert, Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, VStack } from "native-base";
+import { Alert, Box, Button, Center, FormControl, Heading, HStack, Input, ScrollView, useToast, VStack } from "native-base";
 import { useState } from "react";
-import { auth } from '../config/firebase';
+
+import { ToastAlert } from '@components/ToastAlert';
+import { AuthFirebase } from '@services/AuthFirebase';
 
 export function SignUp() {
+  const toast = useToast();
   const navigation = useNavigation();
-  const [email, setEmail] = useState('henriqueweiand@gmail.com');
-  const [password, setPassword] = useState('Abc12345');
-  const [repassword, setRepassword] = useState('');
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+    repassword: ''
+  });
 
-  const onHandleSignup = () => {
-    if (email !== '' && password !== '') {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => console.log('Signup success'))
-        .catch((err) => console.log("SignIn error", err));
+  const handleSignIn = async () => {
+    const { email, password, repassword } = credentials;
+
+    if (email !== "" && password !== "" && password === repassword) {
+      const authFirebase = new AuthFirebase();
+
+      try {
+        await authFirebase.signup({ email, password });
+
+        toast.show({
+          render: () => {
+            return <ToastAlert title="Account was created" />;
+          }
+        });
+        handleGoSignIn();
+      } catch (e) {
+        toast.show({
+          render: () => {
+            return <ToastAlert title="Was not possible to make the signup" />;
+          }
+        });
+      }
+    } else {
+      toast.show({
+        render: () => {
+          return <ToastAlert title="You have to fill the form out" />;
+        }
+      });
     }
   };
+
+  const onChange = (field: string, value: string) => {
+    setCredentials(e => ({
+      ...e,
+      [field]: value,
+    }))
+  }
 
   const handleGoSignIn = () => {
     navigation.navigate('signIn');
@@ -43,25 +77,25 @@ export function SignUp() {
             <VStack space={3} mt="5">
               <FormControl>
                 <FormControl.Label>Email</FormControl.Label>
-                <Input onChange={(e) => setEmail(e)} />
+                <Input onChangeText={(e) => onChange('email', e)} />
               </FormControl>
 
               <FormControl>
                 <FormControl.Label>Password</FormControl.Label>
-                <Input type="password" onChange={(e) => setPassword(e)} />
+                <Input type="password" onChangeText={(e) => onChange('password', e)} />
               </FormControl>
 
               <FormControl>
                 <FormControl.Label>Confirm Password</FormControl.Label>
-                <Input type="password" onChange={(e) => setRepassword(e)} />
+                <Input type="password" onChangeText={(e) => onChange('repassword', e)} />
               </FormControl>
 
               {
-                password !== repassword && <Alert>The passwords are different</Alert>
+                credentials.password !== credentials.repassword && <Alert>The passwords are different</Alert>
               }
 
               <Button mt="2"
-                onPress={onHandleSignup} colorScheme="indigo">
+                onPress={handleSignIn} colorScheme="indigo">
                 Sign up
               </Button>
 
