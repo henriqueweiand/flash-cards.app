@@ -23,7 +23,8 @@ export function SignIn() {
       const authFirebase = new AuthFirebase();
 
       try {
-        const { user } = await authFirebase.signin({ email, password });
+        const { user, ...rest } = await authFirebase.signin({ email, password });
+        console.log(user, rest)
         authSet(user);
       } catch (e) {
         toast.show({

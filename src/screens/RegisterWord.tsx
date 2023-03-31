@@ -10,63 +10,38 @@ export function RegisterWord() {
   return (
     <VStack flexDir={"column"} display="flex" justifyContent={"space-between"} flex={1} px={10} pt={10}>
 
-      <HStack display={"flex"} flexDir="column" flex={1} justifyContent="center">
-        <Box>
-          <Text>The translation is one of them?</Text>
-          <Box display={"flex"} flexDir="row" flexWrap={"wrap"} justifyContent="space-between">
-            {
-              [1, 2, 3, 4].map((key) => (
-                <Button key={key} minW={120} flex={1} padding={10} variant="outline" textAlign={"center"}>
-                  <Text>Option {key}</Text>
-                </Button>
-              ))
-            }
-          </Box>
-        </Box>
-
-        <Box pt={5}>
-          <FormControl>
-            <FormControl.Label>Or write down yours answere</FormControl.Label>
-            <Input type="text" onChangeText={onChange} />
-          </FormControl>
-        </Box>
-
+      <HStack mb={5}>
+        <Text>PT</Text>
+        <Text>EN</Text>
       </HStack>
 
-      <HStack display={"flex"} flexDir={"column"} pt={5}>
-
-        <Box display={"flex"} flexDir="row">
-          <Box maxW="300">
-            <Select selectedValue={service} accessibilityLabel="Choose language" placeholder="Choose language" _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setService(itemValue)}>
-              <Select.Item label="English" value="EN" />
-              <Select.Item label="Portuguese" value="PT" />
-            </Select>
-          </Box>
-
-          <Box maxW="300">
-            <Select selectedValue={service2} accessibilityLabel="Choose language" placeholder="Choose language" _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setService2(itemValue)}>
-              <Select.Item label="English" value="EN" />
-              <Select.Item label="Portuguese" value="PT" />
-            </Select>
-          </Box>
-        </Box>
-
-        <Box>
-          <FormControl>
-            <FormControl.Label>word</FormControl.Label>
-            <Input type="text" onChangeText={onChange} />
-          </FormControl>
-          <Button onPress={() => console.log("hello world")}>Send</Button>
-        </Box>
-
+      <HStack mb={5}>
+        <Input variant="outline" padding={5} type="text" size="2xl" onChangeText={onChange} placeholder="Word" w="100%" />
       </HStack>
-    </VStack>
+
+      <HStack display={"flex"} flexDir="column" flex={1}>
+        <Text>The translation is one of them?</Text>
+        <Box display={"flex"} flexDir="row" flexWrap={"wrap"} justifyContent="space-between">
+          {
+            [1, 2, 3, 4].map((key) => (
+              <Button mr={1} mb={1} key={key} minW={120} flex={1} padding={10} variant="outline" textAlign={"center"}>
+                <Text>Option {key}</Text>
+              </Button>
+            ))
+          }
+          <Input mt={5} padding={3} flexGrow={1} variant="outline" type="text" size="xl" onChangeText={onChange} placeholder="If not, write your translation here" w="100%" />
+        </Box>
+      </HStack>
+
+      <HStack display={"flex"} flexDir={"row"} justifyContent="center" pt={5}>
+        <Button padding={8} variant="solid" colorScheme={"secondary"} textAlign={"center"}>
+          <Text>Cancel</Text>
+        </Button>
+        <Button padding={8} variant="solid" colorScheme={"primary"} textAlign={"center"}>
+          <Text>  Save</Text>
+        </Button>
+      </HStack>
+    </VStack >
   );
 }
 
