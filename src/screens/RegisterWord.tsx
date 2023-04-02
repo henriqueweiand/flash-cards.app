@@ -1,20 +1,98 @@
-import { Box, Button, CheckIcon, FormControl, HStack, Input, Select, Text, VStack } from "native-base";
+import { useAuth } from "@core/hooks/Auth";
+import { Box, Button, HStack, Input, Text, VStack } from "native-base";
 import { useState } from "react";
+import { Firebase } from '@core/init';
+import { doc, setDoc, collection, addDoc, getDocs, query, where } from "firebase/firestore";
+
+interface TranslationQuestion {
+  originalLanguage: string;
+  targetLanguage: string;
+  originalWord: string;
+  targetWord: string;
+  options: { [key: string]: string };
+  customAnswer?: string;
+  authorName: string;
+  author: string;
+}
+
+const exampleData = {
+  "originalLanguage": "English2",
+  "targetLanguage": "French2",
+  "originalWord": "hello2",
+  "targetWord": "bonjour",
+  "options": { "A": "hola", "B": "bonjour", "C": "hallo", "D": "ciao" },
+  "customAnswer": "",
+  "authorName": "John Doe",
+  "author": "johndoe123"
+};
 
 export function RegisterWord() {
+  const { user } = useAuth()
   const [service, setService] = useState("");
   const [service2, setService2] = useState("");
 
   const onChange = (e) => console.log(e);
 
+  const handleNewWord = async () => {
+    // console.log(user?.stsTokenManager.accessToken);
+    const db = Firebase.getFirestore();
+
+    const lessons = collection(db, 'lessons');
+
+
+    await setDoc(doc(db, "lessons", "mariana@gmail.com"), {
+      "email": "mariana@gmail.com",
+      "name": "mariana",
+    });
+
+    await Promise.all([ 
+      addDoc(collection(lessons, 'mariana@gmail.com', 'word'), {
+        "originalLanguage": "English",
+        "targetLanguage": "French",
+        "originalWord": "hello",
+        "targetWord": "bonjour",
+        "options": { "A": "hola", "B": "bonjour", "C": "hallo", "D": "ciao" },
+        "customAnswer": "",
+        "authorName": "John Doe",
+        "userRef": user?.uid
+      }),
+    ]);
+
+    await setDoc(doc(db, "lessons", "henriqueweiand@gmail.com"), {
+      "email": "henriqueweiand@gmail.com",
+      "name": "henriqueweiand",
+    });
+
+    await Promise.all([ 
+      addDoc(collection(lessons, 'mariana@gmail.com', 'word'), {
+        "originalLanguage": "English",
+        "targetLanguage": "French",
+        "originalWord": "hello",
+        "targetWord": "bonjour",
+        "options": { "A": "hola", "B": "bonjour", "C": "hallo", "D": "ciao" },
+        "customAnswer": "",
+        "authorName": "John Doe",
+        "userRef": user?.uid
+      }),
+    ]);
+
+
+    
+
+    // const lessonsRef = collection(db, "lessons", "mariana@gmail.com", "word");
+
+    // const q = query(lessonsRef, where("originalLanguage", "==", "English"));
+
+    // const querySnapshot = await getDocs(q);
+
+    // querySnapshot.forEach((doc) => {
+    //   // doc.data() is never undefined for query doc snapshots
+    //   console.log(doc.id, " => ", doc.data());
+    // });
+  }
+
   return (
     <VStack flexDir={"column"} display="flex" justifyContent={"space-between"} flex={1} px={10} pt={10}>
-
-      <HStack mb={5}>
-        <Text>PT</Text>
-        <Text>EN</Text>
-      </HStack>
-
       <HStack mb={5}>
         <Input variant="outline" padding={5} type="text" size="2xl" onChangeText={onChange} placeholder="Word" w="100%" />
       </HStack>
@@ -34,11 +112,11 @@ export function RegisterWord() {
       </HStack>
 
       <HStack display={"flex"} flexDir={"row"} justifyContent="center" pt={5}>
-        <Button padding={8} variant="solid" colorScheme={"secondary"} textAlign={"center"}>
+        <Button rounded={"3xl"} padding={8} variant="solid" colorScheme={"secondary"} textAlign={"center"}>
           <Text>Cancel</Text>
         </Button>
-        <Button padding={8} variant="solid" colorScheme={"primary"} textAlign={"center"}>
-          <Text>  Save</Text>
+        <Button onPress={handleNewWord} rounded={"3xl"} padding={8} variant="solid" colorScheme={"primary"} textAlign={"center"}>
+          <Text>Save</Text>
         </Button>
       </HStack>
     </VStack >

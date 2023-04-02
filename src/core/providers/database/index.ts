@@ -6,12 +6,13 @@ import Constants from 'expo-constants';
 import { IFirebase } from './interface';
 
 export class Firebase implements IFirebase {
+  private app;
   private auth;
   private database;
 
   constructor(
   ) {
-      initializeApp({
+      const app = initializeApp({
         apiKey: Constants.manifest.extra.apiKey,
         authDomain: Constants.manifest.extra.authDomain,
         projectId: Constants.manifest.extra.projectId,
@@ -21,8 +22,9 @@ export class Firebase implements IFirebase {
         databaseURL: Constants.manifest.extra.databaseURL
       });
 
+      this.app = app;
       this.auth = getAuth();
-      this.database = getFirestore();
+      this.database = getFirestore(app);
   }
 
   public getAuth() {

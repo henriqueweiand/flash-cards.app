@@ -1,13 +1,14 @@
 import { AuthAsyncStorage } from '@services/AuthAsyncStorage';
 import { User } from '@domain/entities/User';
 import { createContext, ReactNode, useEffect, useState } from 'react'
+import { User as UserFirebase } from 'firebase/auth';
 
 export interface AuthContextType {
   loading: boolean;
   authenticated: boolean;
   user: User | undefined;
   get: () => Promise<User | undefined>;
-  set: (user: User) => void;
+  set: (user: UserFirebase) => void;
 }
 
 interface AuthProviderProps {
@@ -21,11 +22,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User>();
 
-  const set = async (user: User) => {
+  const set = async (user: UserFirebase) => {
     const authAsyncStorage = new AuthAsyncStorage();
+    const userJosn = user.toJSON() as User;
 
-    await authAsyncStorage.set(user.toJSON());
-    setUser(user);
+    await authAsyncStorage.set(userJosn);
+    setUser(userJosn);
     setLoading(false);
   }
 
