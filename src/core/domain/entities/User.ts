@@ -1,29 +1,45 @@
-// import { User as FirebaseUser } from 'firebase/auth';
-
-interface ProviderData {
-    providerId: string;
-    uid: string;
-    displayName: string | null;
-    email: string | null;
-    phoneNumber: string | null;
-    photoURL: string | null;
-}
+import { DocumentReference } from "firebase/firestore";
 
 interface StsTokenManager {
     refreshToken: string;
     accessToken: string;
     expirationTime: number;
 }
-  
-export interface User {
+
+export interface UserProps {
     uid: string;
     email: string;
+    name?: string;
     emailVerified: boolean;
-    isAnonymous: boolean;
-    providerData: ProviderData[];
     stsTokenManager: StsTokenManager;
     createdAt: string;
     lastLoginAt: string;
-    apiKey: string;
-    appName: string;
+}
+
+export class User {
+    private props: UserProps;
+
+    constructor(props: UserProps) {
+        this.props = props;
+    }
+
+    getUID() {
+        return this.props.uid;
+    }
+
+    getEmail() {
+        return this.props.email;
+    }
+
+    getName() {
+        return this.props.name;
+    }
+
+    updateProps(updatedProps: Partial<UserProps>): void {
+        Object.assign(this.props, updatedProps);
+    }
+
+    toObject(): UserProps {
+        return this.props;
+    }
 }

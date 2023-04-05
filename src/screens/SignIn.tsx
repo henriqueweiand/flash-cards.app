@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ToastAlert } from "@components/ToastAlert";
 import { useAuth } from "@hooks/Auth";
 import { AuthFirebase } from "@services/AuthFirebase";
+import { User, UserProps } from "@core/domain/entities/User";
 
 export function SignIn() {
   const navigation = useNavigation();
@@ -23,8 +24,9 @@ export function SignIn() {
       const authFirebase = new AuthFirebase();
 
       try {
-        const { user, ...rest } = await authFirebase.signin({ email, password });
-        console.log(user, rest)
+        const { user: firebaseUser } = await authFirebase.signin({ email, password });
+        const user = new User(firebaseUser.toJSON() as UserProps);
+
         authSet(user);
       } catch (e) {
         toast.show({

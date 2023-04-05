@@ -4,7 +4,7 @@ import { Firebase } from '@core/init';
 export class AuthFirebase {
     constructor(
         private firebase = Firebase
-    ) {}
+    ) { }
 
     async signup({ email, password }: { email: string, password: string }): Promise<UserCredential> {
         return await createUserWithEmailAndPassword(this.firebase.getAuth(), email, password)

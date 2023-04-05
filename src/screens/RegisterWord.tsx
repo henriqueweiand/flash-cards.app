@@ -1,30 +1,9 @@
+import { User } from "@core/domain/entities/User";
+import { Word } from "@core/domain/entities/Word";
 import { useAuth } from "@core/hooks/Auth";
+import { FireStoreWord } from "@core/services/FireStoreWord";
 import { Box, Button, HStack, Input, Text, VStack } from "native-base";
 import { useState } from "react";
-import { Firebase } from '@core/init';
-import { doc, setDoc, collection, addDoc, getDocs, query, where } from "firebase/firestore";
-
-interface TranslationQuestion {
-  originalLanguage: string;
-  targetLanguage: string;
-  originalWord: string;
-  targetWord: string;
-  options: { [key: string]: string };
-  customAnswer?: string;
-  authorName: string;
-  author: string;
-}
-
-const exampleData = {
-  "originalLanguage": "English2",
-  "targetLanguage": "French2",
-  "originalWord": "hello2",
-  "targetWord": "bonjour",
-  "options": { "A": "hola", "B": "bonjour", "C": "hallo", "D": "ciao" },
-  "customAnswer": "",
-  "authorName": "John Doe",
-  "author": "johndoe123"
-};
 
 export function RegisterWord() {
   const { user } = useAuth()
@@ -34,61 +13,22 @@ export function RegisterWord() {
   const onChange = (e) => console.log(e);
 
   const handleNewWord = async () => {
-    // console.log(user?.stsTokenManager.accessToken);
-    const db = Firebase.getFirestore();
 
-    const lessons = collection(db, 'lessons');
-
-
-    await setDoc(doc(db, "lessons", "mariana@gmail.com"), {
-      "email": "mariana@gmail.com",
-      "name": "mariana",
+    const service = new FireStoreWord(user as User)
+    const word = new Word({
+      originalLanguage: "English2",
+      targetLanguage: "French2",
+      originalWord: "hello",
+      targetWord: "bonjour",
+      options: { "A": "hola", "B": "bonjour", "C": "hallo", "D": "ciao" },
+      customAnswer: "",
+      authorName: "henrique",
+      userRef: user?.getUID() as string,
     });
 
-    await Promise.all([ 
-      addDoc(collection(lessons, 'mariana@gmail.com', 'word'), {
-        "originalLanguage": "English",
-        "targetLanguage": "French",
-        "originalWord": "hello",
-        "targetWord": "bonjour",
-        "options": { "A": "hola", "B": "bonjour", "C": "hallo", "D": "ciao" },
-        "customAnswer": "",
-        "authorName": "John Doe",
-        "userRef": user?.uid
-      }),
-    ]);
-
-    await setDoc(doc(db, "lessons", "henriqueweiand@gmail.com"), {
-      "email": "henriqueweiand@gmail.com",
-      "name": "henriqueweiand",
+    await service.create({
+      document: word,
     });
-
-    await Promise.all([ 
-      addDoc(collection(lessons, 'mariana@gmail.com', 'word'), {
-        "originalLanguage": "English",
-        "targetLanguage": "French",
-        "originalWord": "hello",
-        "targetWord": "bonjour",
-        "options": { "A": "hola", "B": "bonjour", "C": "hallo", "D": "ciao" },
-        "customAnswer": "",
-        "authorName": "John Doe",
-        "userRef": user?.uid
-      }),
-    ]);
-
-
-    
-
-    // const lessonsRef = collection(db, "lessons", "mariana@gmail.com", "word");
-
-    // const q = query(lessonsRef, where("originalLanguage", "==", "English"));
-
-    // const querySnapshot = await getDocs(q);
-
-    // querySnapshot.forEach((doc) => {
-    //   // doc.data() is never undefined for query doc snapshots
-    //   console.log(doc.id, " => ", doc.data());
-    // });
   }
 
   return (
