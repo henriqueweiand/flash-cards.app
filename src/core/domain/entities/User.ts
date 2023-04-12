@@ -35,6 +35,10 @@ export class User {
         return this.props.name;
     }
 
+    getAccessToken() {
+        return this.props.stsTokenManager.accessToken;
+    }
+
     updateProps(updatedProps: Partial<UserProps>): void {
         Object.assign(this.props, updatedProps);
     }

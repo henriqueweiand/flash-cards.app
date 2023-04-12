@@ -24,9 +24,9 @@ export function SignIn() {
       const authFirebase = new AuthFirebase();
 
       try {
-        const { user: firebaseUser } = await authFirebase.signin({ email, password });
+        const { user: firebaseUser, ...rest } = await authFirebase.signin({ email, password });
         const user = new User(firebaseUser.toJSON() as UserProps);
-
+        console.log(rest)
         authSet(user);
       } catch (e) {
         toast.show({
