@@ -11,7 +11,6 @@ export interface WordProps {
     targetWord: string;
     options: IOptionWord;
     customAnswer?: string;
-    authorName: string;
     userRef: string;
 }
 
