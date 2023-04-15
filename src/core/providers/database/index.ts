@@ -12,26 +12,34 @@ export class Firebase implements IFirebase {
 
   constructor(
   ) {
-      const app = initializeApp({
-        apiKey: Constants.manifest.extra.apiKey,
-        authDomain: Constants.manifest.extra.authDomain,
-        projectId: Constants.manifest.extra.projectId,
-        storageBucket: Constants.manifest.extra.storageBucket,
-        messagingSenderId: Constants.manifest.extra.messagingSenderId,
-        appId: Constants.manifest.extra.appId,
-        databaseURL: Constants.manifest.extra.databaseURL
-      });
+    const app = initializeApp({
+      apiKey: Constants.manifest.extra.apiKey,
+      authDomain: Constants.manifest.extra.authDomain,
+      projectId: Constants.manifest.extra.projectId,
+      storageBucket: Constants.manifest.extra.storageBucket,
+      messagingSenderId: Constants.manifest.extra.messagingSenderId,
+      appId: Constants.manifest.extra.appId,
+      databaseURL: Constants.manifest.extra.databaseURL
+    });
 
-      this.app = app;
-      this.auth = getAuth();
-      this.database = getFirestore(app);
+    this.app = app;
+    this.auth = getAuth();
+    this.database = getFirestore(app);
   }
 
   public getAuth() {
-      return this.auth;
+    return this.auth;
+  }
+
+  public async getRefreshedToken() {
+    const auth = this.getAuth();
+    const user = auth.currentUser;
+
+    if (user)
+      return await user.getIdToken(true);
   }
 
   public getFirestore() {
-      return this.database;
+    return this.database;
   }
 }

@@ -2,23 +2,19 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-import { AuthAsyncStorage } from '@core/services/AuthAsyncStorage';
+import { Firebase } from '@core/init';
 import { TranslationOptionsResponse } from './interface';
-import { User } from '@core/domain/entities/User';
 
 export class Suggestions {
   private readonly OPENIA_ENDPOINT = Constants.manifest.extra.openIAEndpoint;
 
   constructor(
-    private authAsyncStorage: AuthAsyncStorage = new AuthAsyncStorage()
+    private firebase = Firebase
   ) { }
 
   async getToken() {
     try {
-      const storageData = await this.authAsyncStorage.get();
-      const user = new User(JSON.parse(String(storageData)));
-
-      return user.getAccessToken();
+      return await this.firebase.getRefreshedToken();
     } catch (e) {
       throw new Error('Cannot get the user auth from localstorage');
     }

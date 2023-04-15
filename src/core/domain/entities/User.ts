@@ -1,4 +1,3 @@
-import { DocumentReference } from "firebase/firestore";
 
 interface StsTokenManager {
     refreshToken: string;

@@ -3,29 +3,32 @@ import { Word } from "@core/domain/entities/Word";
 import { useAuth } from "@core/hooks/Auth";
 import { FireStoreWord } from "@core/services/FireStoreWord";
 import { Suggestions } from "@core/services/Suggestions";
-import { Box, Button, HStack, Input, Text, VStack } from "native-base";
+import { Box, Button, HStack, Input, Text, VStack, useToast } from "native-base";
 import { useState } from "react";
+import { debounce } from 'lodash';
+import { ToastAlert } from "@components/ToastAlert";
 
 export function RegisterWord() {
   const { user } = useAuth()
+  const toast = useToast();
+
   const [word, setWord] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
   const [optionSelected, setOptionSelected] = useState<number | null>();
-  const [customAnswer, setCustomAnswer] = useState<string | null>();
+  const [customAnswer, setCustomAnswer] = useState<string | undefined>('');
   const [options, setOptions] = useState<{ right: string[], wrong: string[] }>({ right: [], wrong: [] })
 
-  const onChange = (e: string) => {
-    setWord(e);
+  const handleInput = debounce((value: string) => {
+    setWord(value);
 
-    if (e.length >= 7) {
-      handleSearch(e);
+    if (value.length >= 3) {
+      handleSearch(value);
     }
-  }
+  }, 1000);
 
-  const onChangeCustomerAnswer = (e: string) => {
-
+  const onChangeCustomerAnswer = (value: string) => {
     setOptionSelected(null)
-    setCustomAnswer(e);
+    setCustomAnswer(value);
   }
 
   const handleSearch = async (value: string) => {
@@ -48,33 +51,33 @@ export function RegisterWord() {
     console.log('handleCancel');
   }
 
+  const handleFinalAnswer = () => {
+    if (customAnswer !== "" && customAnswer !== undefined) {
+      return customAnswer;
+    } else if (optionSelected) {
+      return options.right[optionSelected];
+    } else {
+      return false;
+    }
+  }
+
   const handleNewWord = async () => {
     console.log('handleNewWord');
-    let finalCustomAnswer: string;
-
-    if (customAnswer !== "" && customAnswer !== undefined) {
-      finalCustomAnswer = customAnswer;
-    } else {
-      finalCustomAnswer = options.right[optionSelected];
-    }
-
-    console.log('options.right[optionSelected]', options.right[optionSelected])
-    console.log('customAnswer', customAnswer)
-    console.log('options', options)
-    console.log('optionSelected', optionSelected)
 
     const finalOptions = options.right.reduce((acc, curr) => {
       acc[curr.toLocaleLowerCase()] = curr;
       return acc;
     }, {});
 
-    if (!!user && word) {
+    const targetWord = handleFinalAnswer();
+
+    if (!!user && word && targetWord) {
       const service = new FireStoreWord(user);
       const wordCreated = new Word({
         originalLanguage: "Portuguese",
         targetLanguage: "English",
         originalWord: word,
-        targetWord: finalCustomAnswer,
+        targetWord,
         options: finalOptions,
         customAnswer: customAnswer || '',
         userRef: user.getUID(),
@@ -83,13 +86,19 @@ export function RegisterWord() {
       await service.create({
         document: wordCreated,
       });
+    } else {
+      toast.show({
+        render: () => {
+          return <ToastAlert title="Error" description="please review pre requirement fields" />;
+        }
+      });
     }
   }
 
   return (
     <VStack flexDir={"column"} display="flex" justifyContent={"space-between"} flex={1} px={10} pt={10}>
       <HStack mb={5}>
-        <Input variant="outline" padding={5} type="text" size="2xl" onChangeText={onChange} placeholder="Word" w="100%" />
+        <Input variant="outline" padding={5} type="text" size="2xl" onChangeText={handleInput} placeholder="Word" w="100%" />
       </HStack>
 
       {
@@ -104,6 +113,7 @@ export function RegisterWord() {
                       options.right.map((option, key) => (
                         <Button onPress={() => {
                           setOptionSelected(key);
+                          setCustomAnswer('');
                         }
                         } mr={1} mb={1} key={key} minW={120} flex={1} padding={10} variant={optionSelected === key ? "solid" : "outline"} textAlign={"center"}>
                           <Text>{option}</Text>
@@ -111,7 +121,7 @@ export function RegisterWord() {
                       ))
                     }
 
-                    <Input mt={5} padding={3} flexGrow={1} variant="outline" type="text" size="xl" onChangeText={onChangeCustomerAnswer} placeholder="If not, write your translation here" w="100%" />
+                    <Input mt={5} padding={3} flexGrow={1} variant="outline" type="text" size="xl" value={customAnswer} onChangeText={onChangeCustomerAnswer} placeholder="If not, write your translation here" w="100%" />
                   </Box>
                 </>
               )
@@ -124,7 +134,9 @@ export function RegisterWord() {
         <Button onPress={handleCancel} rounded={"3xl"} padding={8} variant="solid" colorScheme={"secondary"} textAlign={"center"}>
           <Text>Cancel</Text>
         </Button>
-        <Button disabled={!optionSelected} onPress={handleNewWord} rounded={"3xl"} padding={8} variant="solid" colorScheme={"primary"} textAlign={"center"}>
+        <Button onPress={handleNewWord} rounded={"3xl"} padding={8} variant={
+          !!handleFinalAnswer() ? `solid` : `ghost`
+        } colorScheme={"primary"} textAlign={"center"}>
           <Text>Save</Text>
         </Button>
       </HStack>
