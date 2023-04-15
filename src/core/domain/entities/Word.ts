@@ -35,6 +35,18 @@ export class Word {
         Object.assign(this.props, updatedProps);
     }
 
+    getOptions(): string[] {
+        return Object.keys(this.props.options).map(key => this.props.options[key]);;
+    }
+
+    getTargetWord(): string {
+        return this.props.targetWord;
+    }
+
+    getOriginalWord(): string {
+        return this.props.originalWord;
+    }
+
     toObject(): WordProps {
         return this.props;
     }

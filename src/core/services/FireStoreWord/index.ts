@@ -1,4 +1,4 @@
-import { CollectionReference, DocumentReference, Firestore, addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc, where } from 'firebase/firestore';
+import { CollectionReference, DocumentReference, Firestore, QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc, where } from 'firebase/firestore';
 
 import { Word, WordProps } from '@core/domain/entities/Word';
 import { Firebase } from '@core/init';
@@ -71,7 +71,7 @@ export class FireStoreWord {
         const docs = await getDocs(this.collectionWords);
 
         const words: Word[] = [];
-        docs.forEach((doc) => {
+        docs.forEach((doc: QueryDocumentSnapshot) => {
             const wordData = doc.data() as WordProps;
             const word = new Word(wordData, doc.ref);
 
