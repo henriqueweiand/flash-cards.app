@@ -42,6 +42,15 @@ export function AppRoutes() {
             }
         }}>
             <Screen
+                name='registerWord'
+                component={RegisterWord}
+                options={{
+                    tabBarIcon: ({ color }) => (
+                        <Ionicons name="create-outline" size={iconSize} color={color} />
+                    )
+                }}
+            />
+            <Screen
                 name='games'
                 component={Games}
                 options={{
@@ -69,15 +78,6 @@ export function AppRoutes() {
                 options={{ tabBarButton: () => null }}
             />
 
-            <Screen
-                name='registerWord'
-                component={RegisterWord}
-                options={{
-                    tabBarIcon: ({ color }) => (
-                        <Ionicons name="create-outline" size={iconSize} color={color} />
-                    )
-                }}
-            />
         </Navigator>
     );
 }

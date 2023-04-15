@@ -4,6 +4,9 @@ import { useState } from "react";
 
 import { ToastAlert } from '@components/ToastAlert';
 import { AuthFirebase } from '@services/AuthFirebase';
+import { Lesson, LessonProps } from '@core/domain/entities/Lesson';
+import { FireStoreLesson } from '@core/services/FireStoreLesson';
+import { User, UserProps } from '@core/domain/entities/User';
 
 export function SignUp() {
   const toast = useToast();
@@ -21,7 +24,16 @@ export function SignUp() {
       const authFirebase = new AuthFirebase();
 
       try {
-        await authFirebase.signup({ email, password });
+        const { user: firebaseUser } = await authFirebase.signup({ email, password });
+        const user = new User(firebaseUser.toJSON() as UserProps);
+
+        const lesson = new Lesson({
+          email: user.getEmail(),
+          userRef: user.getUID()
+        } as LessonProps);
+
+        const service = new FireStoreLesson(user)
+        service.create({ document: lesson });
 
         toast.show({
           render: () => {

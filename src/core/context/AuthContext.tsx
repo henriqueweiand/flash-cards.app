@@ -1,6 +1,7 @@
 import { AuthAsyncStorage } from '@services/AuthAsyncStorage';
-import { User } from '@domain/entities/User';
 import { createContext, ReactNode, useEffect, useState } from 'react'
+
+import { User } from '@domain/entities/User';
 
 export interface AuthContextType {
   loading: boolean;
@@ -24,7 +25,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const set = async (user: User) => {
     const authAsyncStorage = new AuthAsyncStorage();
 
-    await authAsyncStorage.set(user.toJSON());
+    await authAsyncStorage.set(user.toObject());
     setUser(user);
     setLoading(false);
   }
@@ -34,7 +35,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const storageData = await authAsyncStorage.get();
 
     if (!!storageData)
-      return JSON.parse(String(storageData)) as User;
+      return new User(JSON.parse(String(storageData)));
 
     return undefined;
   }
