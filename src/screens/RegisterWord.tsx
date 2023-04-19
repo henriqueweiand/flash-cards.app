@@ -54,7 +54,7 @@ export function RegisterWord() {
   const handleFinalAnswer = () => {
     if (customAnswer !== "" && customAnswer !== undefined) {
       return customAnswer;
-    } else if (optionSelected) {
+    } else if (optionSelected || optionSelected === 0) {
       return options.right[optionSelected];
     } else {
       return false;
