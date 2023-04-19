@@ -7,13 +7,27 @@ import { Progress } from 'native-base';
 
 export function GameOption() {
   const { user } = useAuth()
-  const [optionSelected, setOptionSelected] = useState<number | null>();
+
+  const [playedGames, setPlayedGames] = useState<Word[]>([]);
   const [games, setGames] = useState<Word[]>([]);
-  const [count, setCount] = useState<number>(0);
   const [game, setGame] = useState<Word>();
 
+  const [optionSelected, setOptionSelected] = useState<string | null>(null);
+  const [answerFeedback, setAnswerFeedback] = useState<'wrong' | 'right' | null>(null);
+
   const calcPorcentage = () => {
-    return (count / games.length) * 100;
+    const totalPlayed = playedGames.length;
+
+    return (totalPlayed / (games.length + totalPlayed)) * 100;
+    // 0 (4+0)
+    // 1 (3+1)
+    // 2 (2+2)
+  }
+
+  const getNextGame = () => {
+    const index = Math.floor(Math.random() * games.length);
+
+    return games[index];
   }
 
   const init = async () => {
@@ -23,29 +37,42 @@ export function GameOption() {
       const words = await fireStoreWord.findAll();
 
       setGames(words);
-      setGame(words[count]);
+
+      const index = Math.floor(Math.random() * words.length);
+
+      setGame(words[index]);
+    }
+  }
+
+  const checkAnswer = () => {
+    const rightAnswer = game?.getTargetWord().toLocaleLowerCase();
+    const userAnswer = optionSelected?.toLocaleLowerCase();
+
+    if (userAnswer == rightAnswer) {
+      setAnswerFeedback('right');
+
+      setPlayedGames([...playedGames, game])
+      setGames(games.filter(cgame => cgame.getDocRef() !== game?.getDocRef()))
+    } else {
+      setAnswerFeedback('wrong');
     }
   }
 
   const next = () => {
-    const nextCount = count + 1;
-    setCount(nextCount);
-    setGame(games[nextCount]);
+    const nextGame = getNextGame();
+
+    setGame(nextGame);
+    setOptionSelected(null);
+    setAnswerFeedback(null);
   }
 
   useEffect(() => {
     init();
   }, [])
 
-  useEffect(() => {
-    console.log(game)
-  }, [game])
-
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-      {
-        games.length > 0 && <Progress value={calcPorcentage()} mx="4" />
-      }
+      <Progress value={calcPorcentage()} mx="4" />
 
       {
         !!game && (
@@ -59,8 +86,8 @@ export function GameOption() {
               {
                 game.getOptions().map((value, key) => (
                   <Button onPress={() => {
-                    setOptionSelected(key);
-                  }} key={key} minW={120} flex={1} padding={5} mt={1} variant={optionSelected === key ? "solid" : "outline"} textAlign={"center"}>
+                    setOptionSelected(value);
+                  }} key={key} minW={120} flex={1} padding={5} mt={1} variant={optionSelected === value ? "solid" : "outline"} textAlign={"center"}>
                     <Text>{value}</Text>
                   </Button>
                 ))
@@ -69,10 +96,24 @@ export function GameOption() {
           </VStack>
         )}
 
-      <HStack display={"flex"} flexDir={"row"} justifyContent="center" pt={5}>
-        <Button onPress={next} rounded={"3xl"} padding={8} variant='solid' colorScheme={"primary"} textAlign={"center"}>
-          <Text>Check</Text>
-        </Button>
+      <HStack display={"flex"} flexDir={"column"} justifyContent="center" pt={5}>
+        {
+          answerFeedback !== null ? (
+            <Button onPress={next} rounded={"3xl"} padding={8} variant='solid' colorScheme={answerFeedback === 'right' ? 'green' : 'red'} textAlign={"center"}>
+              <Text>Next</Text>
+            </Button>
+          ) : (
+            <>
+              {
+                (optionSelected !== null) && (
+                  <Button onPress={checkAnswer} rounded={"3xl"} padding={8} variant='solid' colorScheme={"primary"} textAlign={"center"}>
+                    <Text>Check</Text>
+                  </Button>
+                )
+              }
+            </>
+          )
+        }
       </HStack>
     </ScrollView>
   );
