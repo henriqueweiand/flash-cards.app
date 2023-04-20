@@ -1,4 +1,5 @@
 import { DocumentReference } from 'firebase/firestore';
+import _ from 'lodash';
 
 export interface IOptionWord {
     [index: string]: any;
@@ -46,17 +47,12 @@ export class Word {
 
     getOptionsWithMax(max: number): string[] {
         const right = this.getTargetWord();
-        const wrong = this.getWrongOptions();
+        const wrong = _.shuffle(this.getWrongOptions());
 
-        const options = [right, ...wrong];
+        const wrongOptions = wrong.slice(0, max - 1);
 
-        // shuffle the options to randomize the order
-        for (let i = options.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [options[i], options[j]] = [options[j], options[i]];
-        }
-
-        return options.slice(0, max);
+        const options = [right, ...wrongOptions];
+        return _.shuffle(options);
     }
 
 
