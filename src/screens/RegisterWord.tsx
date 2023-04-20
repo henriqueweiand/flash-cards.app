@@ -62,9 +62,12 @@ export function RegisterWord() {
   }
 
   const handleNewWord = async () => {
-    console.log('handleNewWord');
+    const finalRightOptions = options.right.reduce((acc, curr) => {
+      acc[curr.toLocaleLowerCase()] = curr;
+      return acc;
+    }, {});
 
-    const finalOptions = options.right.reduce((acc, curr) => {
+    const finalWrongOptions = options.wrong.reduce((acc, curr) => {
       acc[curr.toLocaleLowerCase()] = curr;
       return acc;
     }, {});
@@ -78,7 +81,8 @@ export function RegisterWord() {
         targetLanguage: "English",
         originalWord: word,
         targetWord,
-        options: finalOptions,
+        rightOptions: finalRightOptions,
+        wrongOptions: finalWrongOptions,
         customAnswer: customAnswer || '',
         userRef: user.getUID(),
       });

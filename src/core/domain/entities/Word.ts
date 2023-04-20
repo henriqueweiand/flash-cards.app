@@ -1,7 +1,7 @@
 import { DocumentReference } from 'firebase/firestore';
 
 export interface IOptionWord {
-    [index: string]: string | number;
+    [index: string]: any;
 }
 
 export interface WordProps {
@@ -9,7 +9,8 @@ export interface WordProps {
     targetLanguage: string;
     originalWord: string;
     targetWord: string;
-    options: IOptionWord;
+    rightOptions: IOptionWord;
+    wrongOptions: IOptionWord;
     customAnswer?: string;
     userRef: string;
 }
@@ -35,9 +36,29 @@ export class Word {
         Object.assign(this.props, updatedProps);
     }
 
-    getOptions(): string[] {
-        return Object.keys(this.props.options).map(key => this.props.options[key]);;
+    getRightOptions(): string[] {
+        return Object.keys(this.props.rightOptions).map(key => this.props.rightOptions[key]);;
     }
+
+    getWrongOptions(): string[] {
+        return Object.keys(this.props.wrongOptions).map(key => this.props.wrongOptions[key]);;
+    }
+
+    getOptionsWithMax(max: number): string[] {
+        const right = this.getTargetWord();
+        const wrong = this.getWrongOptions();
+
+        const options = [right, ...wrong];
+
+        // shuffle the options to randomize the order
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+
+        return options.slice(0, max);
+    }
+
 
     getTargetWord(): string {
         return this.props.targetWord;

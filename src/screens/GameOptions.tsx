@@ -19,9 +19,6 @@ export function GameOption() {
     const totalPlayed = playedGames.length;
 
     return (totalPlayed / (games.length + totalPlayed)) * 100;
-    // 0 (4+0)
-    // 1 (3+1)
-    // 2 (2+2)
   }
 
   const getNextGame = () => {
@@ -84,7 +81,7 @@ export function GameOption() {
 
             <HStack display={"flex"} flexDir={"column"} pt={5}>
               {
-                game.getOptions().map((value, key) => (
+                game.getOptionsWithMax(4).map((value, key) => (
                   <Button onPress={() => {
                     setOptionSelected(value);
                   }} key={key} minW={120} flex={1} padding={5} mt={1} variant={optionSelected === value ? "solid" : "outline"} textAlign={"center"}>
