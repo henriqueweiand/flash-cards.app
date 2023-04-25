@@ -42,20 +42,20 @@ export function AppRoutes() {
             }
         }}>
             <Screen
-                name='registerWord'
-                component={RegisterWord}
-                options={{
-                    tabBarIcon: ({ color }) => (
-                        <Ionicons name="create-outline" size={iconSize} color={color} />
-                    )
-                }}
-            />
-            <Screen
                 name='games'
                 component={Games}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <Ionicons name="home-outline" size={iconSize} color={color} />
+                    )
+                }}
+            />
+            <Screen
+                name='registerWord'
+                component={RegisterWord}
+                options={{
+                    tabBarIcon: ({ color }) => (
+                        <Ionicons name="create-outline" size={iconSize} color={color} />
                     )
                 }}
             />
