@@ -7,6 +7,7 @@ export interface AuthContextType {
   loading: boolean;
   authenticated: boolean;
   user: User | undefined;
+  logoff: () => void;
   get: () => Promise<User | undefined>;
   set: (user: User) => void;
 }
@@ -28,6 +29,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await authAsyncStorage.set(user.toObject());
     setUser(user);
     setLoading(false);
+  }
+
+  const logoff = async () => {
+    const authAsyncStorage = new AuthAsyncStorage();
+
+    await authAsyncStorage.clear();
+    setUser(undefined);
+    setLoading(true);
   }
 
   const get = async () => {
@@ -68,6 +77,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         user,
         set,
         get,
+        logoff
       }}
     >
       {children}
