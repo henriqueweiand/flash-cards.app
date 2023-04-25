@@ -1,28 +1,20 @@
+import { GameBottomConfirmations } from "@components/GameBottomConfirmations";
 import { useGame } from "@core/hooks/Game";
-import { Button, HStack, ScrollView, Text, VStack } from "native-base";
+import { Button, HStack, Text, VStack } from "native-base";
 import { useEffect, useState } from "react";
 
 export function GameOption() {
-  const { game, next } = useGame();
+  const { game } = useGame();
   const [options, setOptions] = useState([]);
   const [optionSelected, setOptionSelected] = useState<string | null>(null);
-  const [answerFeedback, setAnswerFeedback] = useState<'wrong' | 'right' | null>(null);
 
   useEffect(() => {
     if (game)
       setOptions(game.getOptionsWithMax(4));
   }, [game])
 
-  const checkAnswer = () => {
-    const rightAnswer = game?.getTargetWord().toLocaleLowerCase();
-    const userAnswer = optionSelected?.toLocaleLowerCase();
-
-    if (userAnswer == rightAnswer) {
-      setAnswerFeedback('right');
-    } else {
-      setAnswerFeedback('wrong');
-    }
-  }
+  const rightAnswer = game?.getTargetWord().toLocaleLowerCase();
+  const userAnswer = optionSelected?.toLocaleLowerCase();
 
   return (
     <>
@@ -48,30 +40,9 @@ export function GameOption() {
               </HStack>
             </VStack>
 
-            <HStack display={"flex"} flexDir={"column"} justifyContent="center" pt={5}>
-              {
-                answerFeedback !== null ? (
-                  <Button onPress={() => {
-                    setOptionSelected(null);
-                    setAnswerFeedback(null);
-                    next({ rightAnswer: answerFeedback === 'right' });
-                  }} rounded={"3xl"} padding={8} variant='solid' colorScheme={answerFeedback === 'right' ? 'green' : 'red'} textAlign={"center"}>
-                    <Text>Next</Text>
-                  </Button>
-                ) : (
-                  <>
-                    {
-                      (optionSelected !== null) && (
-                        <Button onPress={checkAnswer} rounded={"3xl"} padding={8} variant='solid' colorScheme={"primary"} textAlign={"center"}>
-                          <Text>Check</Text>
-                        </Button>
-                      )
-                    }
-                  </>
-                )
-              }
-            </HStack>
-
+            <GameBottomConfirmations enableCheck={!!optionSelected} answerIsRight={userAnswer == rightAnswer} nextGameCallback={() => {
+              setOptionSelected(null);
+            }} />
           </>
         )
       }
