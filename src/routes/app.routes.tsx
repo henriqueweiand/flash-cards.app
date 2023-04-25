@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { RegisterWord } from '@screens/RegisterWord';
-import { GameOption } from '@screens/GameOptions';
+import { GameOptionPage } from '@screens/GameOptions/page';
 import { GameTranslate } from '@screens/GameTranslate';
 import { GameSelect } from '@screens/GameSelect';
 import { Games } from '@screens/Games';
@@ -74,7 +74,7 @@ export function AppRoutes() {
 
             <Screen
                 name='gameOption'
-                component={GameOption}
+                component={GameOptionPage}
                 options={{ tabBarButton: () => null }}
             />
 
