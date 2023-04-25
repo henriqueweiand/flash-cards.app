@@ -1,11 +1,12 @@
-import { Loading } from "@components/Loading";
 import { useGame } from "@core/hooks/Game";
-import { Button, HStack, Progress, ScrollView, Text, VStack } from "native-base";
+import { Button, HStack, ScrollView, Text, VStack } from "native-base";
 import { useEffect, useState } from "react";
 
 export function GameOption() {
-  const { game, loading, progress, next, finish } = useGame();
+  const { game, next } = useGame();
   const [options, setOptions] = useState([]);
+  const [optionSelected, setOptionSelected] = useState<string | null>(null);
+  const [answerFeedback, setAnswerFeedback] = useState<'wrong' | 'right' | null>(null);
 
   useEffect(() => {
     if (game)
@@ -23,20 +24,11 @@ export function GameOption() {
     }
   }
 
-  const [optionSelected, setOptionSelected] = useState<string | null>(null);
-  const [answerFeedback, setAnswerFeedback] = useState<'wrong' | 'right' | null>(null);
-
-  if (finish) {
-    return <>Congratulations</>
-  }
-
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+    <>
       {
-        loading ? <Loading /> : (
+        game && (
           <>
-            <Progress value={progress} mx="4" />
-
             <VStack flexDir={"column"} display="flex" justifyContent={"space-between"} flex={1} px={10} pt={10}>
 
               <HStack display={"flex"} flexDir="column" flex={1} justifyContent="center">
@@ -55,6 +47,7 @@ export function GameOption() {
                 }
               </HStack>
             </VStack>
+
             <HStack display={"flex"} flexDir={"column"} justifyContent="center" pt={5}>
               {
                 answerFeedback !== null ? (
@@ -82,7 +75,7 @@ export function GameOption() {
           </>
         )
       }
-    </ScrollView>
+    </>
   );
 }
 

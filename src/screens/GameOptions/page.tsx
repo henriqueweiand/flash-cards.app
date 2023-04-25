@@ -1,6 +1,6 @@
+import React from 'react'
 import { GameProvider } from '@core/context/GameContext';
 import { GameOption } from './GameOptions';
-import React from 'react'
 
 export const GameOptionPage = () => {
     return (

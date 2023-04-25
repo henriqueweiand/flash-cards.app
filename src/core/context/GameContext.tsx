@@ -3,6 +3,9 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { Word } from '@core/domain/entities/Word';
 import { useAuth } from '@core/hooks/Auth';
 import { FireStoreWord } from '@core/services/FireStoreWord';
+import { Button, Progress, ScrollView, Text, VStack } from 'native-base';
+import { Loading } from '@components/Loading';
+import _ from 'lodash';
 
 export interface GameContextType {
   finish: boolean;
@@ -23,39 +26,35 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
   const { user } = useAuth()
   const [loading, setLoading] = useState<boolean>(true);
   const [finish, setFinish] = useState<boolean>(false);
+  const [reset, setReset] = useState<boolean>(false);
 
   const [progress, setProgress] = useState<number>(0);
   const [played, setPlayed] = useState<Word[]>([]);
   const [games, setGames] = useState<Word[]>([]);
   const [game, setGame] = useState<Word | null>(null);
 
-  const calcProgress = () => {
-    const totalPlayed = played.length;
-    const progress = (totalPlayed / (games.length + totalPlayed)) * 100;
-
-    setProgress(progress);
-  }
-
-  const getNextGame = () => {
-    const index = Math.floor(Math.random() * games.length);
-
-    return games[index];
-  }
-
   const next = ({ rightAnswer }: { rightAnswer: boolean }) => {
-    const nextGame = getNextGame();
+    let restGames: Word[];
 
     if (rightAnswer) {
       if (games.length === 1) {
         setFinish(true);
       }
 
-      setPlayed([...played, game]);
-      setGames(games.filter(cgame => cgame.getDocRef() !== game?.getDocRef()));
-      calcProgress();
+      const gamesPlayed = [...played, game as Word];
+      restGames = games.filter(cgame => cgame.getDocRef() !== game?.getDocRef());
+      const progress = (gamesPlayed.length / (restGames.length + gamesPlayed.length)) * 100;
+
+      setPlayed(gamesPlayed);
+      setGames(restGames);
+      setProgress(progress);
+    } else {
+      restGames = games;
     }
 
-    setGame(nextGame);
+    const nextGame = _.shuffle(restGames);
+
+    setGame(nextGame[0]);
   }
 
   const getGames = async ({ gamesQuantity }: { gamesQuantity: number }) => {
@@ -67,10 +66,19 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
 
       const index = Math.floor(Math.random() * words.length);
       setGame(words[index]);
-      calcProgress();
       setLoading(false);
     }
   }
+
+  const touchReset = () => {
+    setReset(!reset);
+    setLoading(true);
+    setFinish(false);
+    setProgress(0);
+    setPlayed([]);
+    setGames([]);
+    setGame(null);
+  };
 
   useEffect(() => {
     if (gamesQuantity) {
@@ -78,8 +86,7 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
     } else {
       throw new Error('GameContext: Inform gamesQuantity');
     }
-
-  }, [gamesQuantity])
+  }, [reset]);
 
   return (
     <GameContext.Provider
@@ -91,7 +98,33 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
         next,
       }}
     >
-      {children}
+      {
+        loading ? <Loading /> : (
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+            <VStack display={"flex"} flexDir={'row'}>
+              <Button onPress={() => {
+                touchReset();
+              }}>
+                <Text>X</Text>
+              </Button>
+              <Progress flex={1} value={progress} mx="4" />
+            </VStack>
+
+            {
+              finish ? <>
+                <Text>
+                  Congratulations
+                </Text>
+                <Button onPress={() => {
+                  touchReset();
+                }}>
+                  <Text>X</Text>
+                </Button>
+              </> : children
+            }
+          </ScrollView>
+        )
+      }
     </GameContext.Provider>
   )
 }
