@@ -8,8 +8,6 @@ import { useState } from "react";
 import { debounce } from 'lodash';
 import { ToastAlert } from "@components/ToastAlert";
 
-import Constants from 'expo-constants';
-
 export function RegisterWord() {
   const { user, logoff } = useAuth()
   const toast = useToast();
@@ -52,16 +50,7 @@ export function RegisterWord() {
   const handleCancel = async () => {
     console.log('handleCancel');
 
-    console.log({
-      apiKey: Constants.manifest.extra.apiKey,
-      authDomain: Constants.manifest.extra.authDomain,
-      projectId: Constants.manifest.extra.projectId,
-      storageBucket: Constants.manifest.extra.storageBucket,
-      messagingSenderId: Constants.manifest.extra.messagingSenderId,
-      appId: Constants.manifest.extra.appId,
-      databaseURL: Constants.manifest.extra.databaseURL
-    });
-    // logoff();
+    logoff();
   }
 
   const handleFinalAnswer = () => {
