@@ -1,83 +1,86 @@
-import { BottomTabNavigationProp, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useTheme } from 'native-base';
-import { Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-
-import { RegisterWord } from '@screens/RegisterWord';
+import { useAuth } from '@core/hooks/Auth';
+import { useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { GameOptionPage } from '@screens/GameOptions/page';
-import { GameTranslate } from '@screens/GameTranslate';
-import { GameSelect } from '@screens/GameSelect';
 import { Games } from '@screens/Games';
+import { Language } from '@screens/Language';
+import { RegisterWord } from '@screens/RegisterWord';
+import { Icon, Button, Text } from 'native-base';
+// import { GameSelect } from '@screens/GameSelect';
+// import { GameTranslate } from '@screens/GameTranslate';
 
-type AppRoutes = {
-    games: undefined;
-    gameSelect: undefined;
-    gameTranslate: undefined;
-    registerWord: undefined;
-    gameOption: undefined;
-}
-
-export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
-
-const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
+const { Navigator, Screen, Group } = createNativeStackNavigator();
 
 export function AppRoutes() {
-
-    const { sizes, colors } = useTheme();
-
-    const iconSize = sizes[6];
+    const { logoff } = useAuth()
+    const navigation = useNavigation();
 
     return (
         <Navigator screenOptions={{
             headerShown: false,
-            tabBarShowLabel: false,
-            tabBarActiveTintColor: colors.green[500],
-            tabBarInactiveTintColor: colors.gray[200],
-            tabBarStyle: {
-                backgroundColor: colors.gray[600],
-                borderTopWidth: 0,
-                height: Platform.OS === "android" ? 'auto' : 96,
-                paddingBottom: sizes[10],
-                paddingTop: sizes[6]
-            }
-        }}>
-            <Screen
-                name='games'
-                component={Games}
-                options={{
-                    tabBarIcon: ({ color }) => (
-                        <Ionicons name="home-outline" size={iconSize} color={color} />
-                    )
-                }}
-            />
-            <Screen
-                name='registerWord'
-                component={RegisterWord}
-                options={{
-                    tabBarIcon: ({ color }) => (
-                        <Ionicons name="create-outline" size={iconSize} color={color} />
-                    )
-                }}
-            />
+            title: '',
+            headerLeft: () => (
+                <Button
+                    colorScheme='light'
+                    size={'sm'}
+                    onPress={() => navigation.navigate('language')}
+                >
+                    Language
+                </Button>
+            ),
+            headerRight: () => (
+                <Button
+                    colorScheme='light'
+                    size={'sm'}
+                    onPress={() => {
+                        logoff();
+                    }}
+                >
+                    Log off
+                </Button>
+            )
 
-            <Screen
+        }}>
+            <Group screenOptions={{ headerShown: true }}>
+                <Screen
+                    name='games'
+                    component={Games}
+                />
+            </Group>
+
+            <Group screenOptions={{ presentation: 'modal' }}>
+                <Screen
+                    name='language'
+                    component={Language}
+                    options={{
+                        animation: 'simple_push'
+                    }}
+                />
+
+                <Screen
+                    name='registerWord'
+                    component={RegisterWord}
+                    options={{
+                        animation: 'simple_push'
+                    }}
+                />
+
+                <Screen
+                    name='gameOption'
+                    component={GameOptionPage}
+                    options={{
+                        animation: 'simple_push'
+                    }}
+                />
+            </Group>
+            {/* <Screen
                 name='gameSelect'
                 component={GameSelect}
-                options={{ tabBarButton: () => null }}
             />
-
             <Screen
                 name='gameTranslate'
                 component={GameTranslate}
-                options={{ tabBarButton: () => null }}
-            />
-
-            <Screen
-                name='gameOption'
-                component={GameOptionPage}
-                options={{ tabBarButton: () => null }}
-            />
-
+            /> */}
         </Navigator>
     );
 }

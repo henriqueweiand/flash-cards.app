@@ -7,9 +7,11 @@ import { Box, Button, HStack, Input, Text, VStack, useToast } from "native-base"
 import { useState } from "react";
 import { debounce } from 'lodash';
 import { ToastAlert } from "@components/ToastAlert";
+import { useNavigation } from "@react-navigation/native";
 
 export function RegisterWord() {
-  const { user, logoff } = useAuth()
+  const { user } = useAuth()
+  const navigation = useNavigation();
   const toast = useToast();
 
   const [word, setWord] = useState<string>();
@@ -48,9 +50,7 @@ export function RegisterWord() {
   }
 
   const handleCancel = async () => {
-    console.log('handleCancel');
-
-    logoff();
+    navigation.goBack()
   }
 
   const handleFinalAnswer = () => {

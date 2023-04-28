@@ -10,7 +10,7 @@ export default function App() {
     <NativeBaseProvider theme={THEME}>
       <AuthProvider>
         <StatusBar
-          barStyle="light-content"
+          barStyle="dark-content"
           backgroundColor="transparent"
           translucent
         />
