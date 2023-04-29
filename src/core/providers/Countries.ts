@@ -1,8 +1,12 @@
-const Coutries = [
-    { "name": "Argentina", "code": "AR" },
-    { "name": "Brazil", "code": "BR" },
-    { "name": "Germany", "code": "DE" },
-    { "name": "United States", "code": "US" },
-];
+export interface ICoutries {
+    name: string;
+    code: string;
+    language: string;
+}
 
-export default Coutries;
+export const Coutries = [
+    { "name": "Argentina", "code": "AR", "language": "Espanhol" },
+    { "name": "Brazil", "code": "BR", "language": "Portugues" },
+    { "name": "Germany", "code": "DE", "language": "Alemão" },
+    { "name": "United States", "code": "US", "language": "Ingles" },
+];

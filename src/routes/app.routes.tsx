@@ -48,14 +48,17 @@ export function AppRoutes() {
                 />
             </Group>
 
-            <Group screenOptions={{ presentation: 'modal' }}>
+            <Group>
                 <Screen
                     name='language'
                     component={Language}
                     options={{
-                        animation: 'simple_push'
+                        animation: 'fade_from_bottom'
                     }}
                 />
+            </Group>
+
+            <Group screenOptions={{ presentation: 'modal' }}>
 
                 <Screen
                     name='registerWord'
