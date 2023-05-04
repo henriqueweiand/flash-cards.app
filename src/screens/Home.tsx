@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Button, Center, ScrollView, Text } from "native-base";
 
-export function Games() {
+export function Home() {
   const navigation = useNavigation();
 
   return (
