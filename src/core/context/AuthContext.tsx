@@ -33,10 +33,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logoff = async () => {
     const authAsyncStorage = new AuthAsyncStorage();
+    setLoading(true);
 
     await authAsyncStorage.clear();
     setUser(undefined);
-    setLoading(true);
+    setAuthenticated(false);
+    setLoading(false);
   }
 
   const get = async () => {

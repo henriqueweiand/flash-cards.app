@@ -26,7 +26,7 @@ export function SignIn() {
       try {
         const { user: firebaseUser, ...rest } = await authFirebase.signin({ email, password });
         const user = new User(firebaseUser.toJSON() as UserProps);
-        console.log(rest)
+
         authSet(user);
       } catch (e) {
         toast.show({
@@ -63,7 +63,7 @@ export function SignIn() {
             <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
               color: "warmGray.50"
             }}>
-              Welcome
+              SignIn
             </Heading>
             <Heading mt="1" _dark={{
               color: "warmGray.200"

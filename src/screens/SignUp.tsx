@@ -77,7 +77,7 @@ export function SignUp() {
             <Heading size="lg" color="coolGray.800" _dark={{
               color: "warmGray.50"
             }} fontWeight="semibold">
-              Welcome
+              SignUp
             </Heading>
 
             <Heading mt="1" color="coolGray.600" _dark={{
