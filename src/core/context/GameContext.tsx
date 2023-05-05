@@ -1,11 +1,13 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Word } from '@core/domain/entities/Word';
 import { useAuth } from '@core/hooks/Auth';
 import { FireStoreWord } from '@core/services/FireStoreWord';
-import { Button, Progress, ScrollView, Text, VStack } from 'native-base';
+import { Button, Icon, Progress, ScrollView, Text, VStack } from 'native-base';
 import { Loading } from '@components/Loading';
 import _ from 'lodash';
+import { useNavigation } from '@react-navigation/native';
 
 export interface GameContextType {
   finish: boolean;
@@ -23,6 +25,7 @@ interface GameProviderProps {
 export const GameContext = createContext({} as GameContextType)
 
 export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
+  const navigation = useNavigation();
   const { user } = useAuth()
   const [loading, setLoading] = useState<boolean>(true);
   const [finish, setFinish] = useState<boolean>(false);
@@ -70,6 +73,10 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
     }
   }
 
+  const handleExit = () => {
+    navigation.goBack();
+  };
+
   const touchReset = () => {
     setReset(!reset);
     setLoading(true);
@@ -101,26 +108,27 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
       {
         loading ? <Loading /> : (
           <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-            <VStack display={"flex"} flexDir={'row'}>
-              <Button onPress={() => {
-                touchReset();
-              }}>
-                <Text>X</Text>
+            <VStack alignItems={'center'} display={"flex"} flexDir={'row'}>
+              <Button
+                variant={'ghost'}
+                onPress={() => handleExit()}
+              >
+                <Icon size="6" as={Ionicons} name="close-outline" />
               </Button>
-              <Progress flex={1} value={progress} mx="4" />
+              <Progress flex={1} value={progress} mr="5" />
             </VStack>
 
             {
-              finish ? <>
-                <Text>
+              finish ? <VStack flex={1} alignItems={'center'} justifyContent={'center'} display={"flex"} flexDir={'column'}>
+                <Text fontSize="5xl" bold textAlign={"center"} mb={5}>
                   Congratulations
                 </Text>
                 <Button onPress={() => {
-                  touchReset();
+                  handleExit();
                 }}>
-                  <Text>X</Text>
+                  Close
                 </Button>
-              </> : children
+              </VStack> : children
             }
           </ScrollView>
         )

@@ -5,7 +5,7 @@ import { GameOptionPage } from '@screens/GameOptions/page';
 import { Home } from '@screens/Home';
 import { Language } from '@screens/Language';
 import { RegisterWord } from '@screens/RegisterWord';
-import { Icon, Button, Text } from 'native-base';
+import { Icon, Button } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 // import { GameSelect } from '@screens/GameSelect';
 // import { GameTranslate } from '@screens/GameTranslate';

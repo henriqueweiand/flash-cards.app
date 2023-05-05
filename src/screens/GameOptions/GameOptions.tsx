@@ -1,4 +1,5 @@
 import { GameBottomConfirmations } from "@components/GameBottomConfirmations";
+import { SafeArea } from "@components/SafeArea";
 import { useGame } from "@core/hooks/Game";
 import { Button, HStack, Text, VStack } from "native-base";
 import { useEffect, useState } from "react";
@@ -17,14 +18,14 @@ export function GameOption() {
   const userAnswer = optionSelected?.toLocaleLowerCase();
 
   return (
-    <>
+    <SafeArea>
       {
         game && (
           <>
             <VStack flexDir={"column"} display="flex" justifyContent={"space-between"} flex={1} px={10} pt={10}>
 
               <HStack display={"flex"} flexDir="column" flex={1} justifyContent="center">
-                <Text textAlign={"center"}>{game.getOriginalWord()}</Text>
+                <Text fontSize="5xl" bold textAlign={"center"}>{game.getOriginalWord()}</Text>
               </HStack>
 
               <HStack display={"flex"} flexDir={"column"} pt={5}>
@@ -46,7 +47,7 @@ export function GameOption() {
           </>
         )
       }
-    </>
+    </SafeArea>
   );
 }
 

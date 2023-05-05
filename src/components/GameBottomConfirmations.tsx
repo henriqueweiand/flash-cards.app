@@ -19,11 +19,11 @@ export const GameBottomConfirmations = ({
     if (!enableCheck) return <></>
 
     return (
-        <HStack display={"flex"} flexDir={"column"} justifyContent="center" pt={5}>
+        <HStack display={"flex"} flexDir={"column"} justifyContent="center" pt={5} ml={3} mr={3}>
             {
                 !answerFeedback ? (
-                    <Button onPress={() => setAnswerFeedback(true)} rounded={"3xl"} padding={8} variant='solid' colorScheme={"primary"} textAlign={"center"}>
-                        <Text>Check</Text>
+                    <Button onPress={() => setAnswerFeedback(true)} rounded={"3xl"} padding={8} variant='solid' colorScheme={'teal'} textAlign={"center"}>
+                        <Text bold>Check</Text>
                     </Button>
                 ) : (
                     <Button onPress={() => {
@@ -33,7 +33,7 @@ export const GameBottomConfirmations = ({
                         next({ rightAnswer: answerIsRight });
                         setAnswerFeedback(false);
                     }} rounded={"3xl"} padding={8} variant='solid' colorScheme={answerIsRight ? 'green' : 'red'} textAlign={"center"}>
-                        <Text>Next</Text>
+                        <Text bold>Next</Text>
                     </Button>
                 )
             }
