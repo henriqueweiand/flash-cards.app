@@ -8,6 +8,7 @@ import { Button, Icon, Progress, ScrollView, Text, VStack } from 'native-base';
 import { Loading } from '@components/Loading';
 import _ from 'lodash';
 import { useNavigation } from '@react-navigation/native';
+import { useLanguage } from '@core/hooks/Language';
 
 export interface GameContextType {
   finish: boolean;
@@ -25,6 +26,7 @@ interface GameProviderProps {
 export const GameContext = createContext({} as GameContextType)
 
 export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
+  const { language } = useLanguage();
   const navigation = useNavigation();
   const { user } = useAuth()
   const [loading, setLoading] = useState<boolean>(true);
@@ -60,11 +62,11 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
     setGame(nextGame[0]);
   }
 
-  const getGames = async ({ gamesQuantity }: { gamesQuantity: number }) => {
+  const getGames = async ({ gamesQuantity, languageFrom, languageTo }: { gamesQuantity: number, languageFrom: string, languageTo: string }) => {
     if (user) {
       const fireStoreWord = new FireStoreWord(user);
 
-      const words = await fireStoreWord.findAll(); // it needs to receive the param gamesQuantity
+      const words = await fireStoreWord.findAll({ gamesQuantity, languageFrom, languageTo });
       setGames(words);
 
       const index = Math.floor(Math.random() * words.length);
@@ -74,6 +76,7 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
   }
 
   const handleExit = () => {
+    touchReset();
     navigation.goBack();
   };
 
@@ -88,12 +91,13 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
   };
 
   useEffect(() => {
-    if (gamesQuantity) {
-      getGames({ gamesQuantity })
+    if (gamesQuantity && !!language) {
+      const currentLanguage = language.toObject();
+      getGames({ gamesQuantity, languageFrom: currentLanguage.from.language, languageTo: currentLanguage.to.language })
     } else {
       throw new Error('GameContext: Inform gamesQuantity');
     }
-  }, [reset]);
+  }, [reset, language]);
 
   return (
     <GameContext.Provider

@@ -5,8 +5,8 @@ export interface ICoutries {
 }
 
 export const Coutries = [
-    { "name": "Argentina", "code": "AR", "language": "Espanhol" },
-    { "name": "Brazil", "code": "BR", "language": "Portugues" },
-    { "name": "Germany", "code": "DE", "language": "Alemão" },
-    { "name": "United States", "code": "US", "language": "Ingles" },
+    { "name": "Argentina", "code": "AR", "language": "Spanish" },
+    { "name": "Brazil", "code": "BR", "language": "Portuguese" },
+    { "name": "Germany", "code": "DE", "language": "German" },
+    { "name": "United States", "code": "US", "language": "English" },
 ];

@@ -4,30 +4,34 @@ import { useAuth } from "@core/hooks/Auth";
 import { FireStoreWord } from "@core/services/FireStoreWord";
 import { Suggestions } from "@core/services/Suggestions";
 import { Box, Button, HStack, Input, Text, VStack, useToast } from "native-base";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { debounce } from 'lodash';
 import { ToastAlert } from "@components/ToastAlert";
 import { useNavigation } from "@react-navigation/native";
 import { SafeArea } from "@components/SafeArea";
+import { useLanguage } from "@core/hooks/Language";
 
 export function RegisterWord() {
+  const { language } = useLanguage();
   const { user } = useAuth()
   const navigation = useNavigation();
   const toast = useToast();
 
-  const [word, setWord] = useState<string | null>();
+  const [word, setWord] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [optionSelected, setOptionSelected] = useState<number | null>();
   const [customAnswer, setCustomAnswer] = useState<string | undefined>('');
   const [options, setOptions] = useState<{ right: string[], wrong: string[] }>({ right: [], wrong: [] })
 
-  const handleInput = debounce((value: string) => {
-    setWord(value);
+  const handleInput = (text: string) => setWord(text);
 
-    if (value.length >= 3) {
-      handleSearch(value);
+  useEffect(() => {
+    if (word.length >= 3) {
+      const debounceSearch = debounce(handleSearch, 1000);
+      debounceSearch(word);
+      return () => debounceSearch.cancel(); // cancel debounce on unmount
     }
-  }, 1000);
+  }, [word, handleSearch]);
 
   const onChangeCustomerAnswer = (value: string) => {
     setOptionSelected(null)
@@ -35,19 +39,29 @@ export function RegisterWord() {
   }
 
   const handleSearch = async (value: string) => {
-    setIsLoading(true);
+    const currentLanguage = language?.toObject();
 
-    const suggestions = new Suggestions();
-    const { right, wrong } = await suggestions.getWord({
-      fromLanguage: 'Portuguese',
-      targetLanguage: 'English',
-      word: value,
-    });
+    if (!!currentLanguage) {
+      setIsLoading(true);
 
-    setOptions({
-      right, wrong
-    });
-    setIsLoading(false);
+      const suggestions = new Suggestions();
+      const { right, wrong } = await suggestions.getWord({
+        fromLanguage: currentLanguage?.from.language,
+        targetLanguage: currentLanguage?.to.language,
+        word: value,
+      });
+
+      setOptions({
+        right, wrong
+      });
+      setIsLoading(false);
+    } else {
+      toast.show({
+        render: () => {
+          return <ToastAlert title="Error" description="Your language was not defined" />;
+        }
+      });
+    }
   }
 
   const handleCancel = async () => {
@@ -55,7 +69,7 @@ export function RegisterWord() {
   }
 
   const handleClear = async () => {
-    setWord(null);
+    setWord('');
     setOptionSelected(null);
     setCustomAnswer(undefined);
     setOptions({ right: [], wrong: [] });
@@ -82,13 +96,14 @@ export function RegisterWord() {
       return acc;
     }, {});
 
+    const currentLanguage = language?.toObject();
     const targetWord = handleFinalAnswer();
 
-    if (!!user && word && targetWord) {
+    if (!!user && word && targetWord && !!currentLanguage) {
       const service = new FireStoreWord(user);
       const wordCreated = new Word({
-        originalLanguage: "Portuguese",
-        targetLanguage: "English",
+        originalLanguage: currentLanguage.from.language,
+        targetLanguage: currentLanguage.to.language,
         originalWord: word,
         targetWord,
         rightOptions: finalRightOptions,
@@ -100,6 +115,7 @@ export function RegisterWord() {
       await service.create({
         document: wordCreated,
       });
+      handleClear();
     } else {
       toast.show({
         render: () => {
@@ -113,7 +129,7 @@ export function RegisterWord() {
     <SafeArea>
       <VStack flexDir={"column"} display="flex" justifyContent={"space-between"} flex={1} px={10} pt={10}>
         <HStack mb={5}>
-          <Input variant="outline" padding={5} type="text" size="2xl" onChangeText={handleInput} placeholder="Word" w="100%" />
+          <Input value={word} variant="outline" padding={5} type="text" size="2xl" onChangeText={handleInput} placeholder="Word" w="100%" />
         </HStack>
 
         {

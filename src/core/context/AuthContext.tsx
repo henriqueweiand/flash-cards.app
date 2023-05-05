@@ -7,6 +7,7 @@ export interface AuthContextType {
   loading: boolean;
   authenticated: boolean;
   user: User | undefined;
+  language: User | undefined;
   logoff: () => void;
   get: () => Promise<User | undefined>;
   set: (user: User) => void;

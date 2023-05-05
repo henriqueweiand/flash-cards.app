@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from './AuthContext'
 import { THEME } from '@components/Theme';
+import { LanguageProvider } from './LanguageContext';
 
 type AppProviderProps = {
   children: ReactNode
@@ -14,7 +15,9 @@ export function AppProvider({ children }: AppProviderProps) {
     <SafeAreaProvider>
       <NativeBaseProvider theme={THEME}>
         <AuthProvider>
-          {children}
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
         </AuthProvider>
       </NativeBaseProvider>
     </SafeAreaProvider>

@@ -1,4 +1,4 @@
-import { CollectionReference, DocumentReference, Firestore, QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc, where } from 'firebase/firestore';
+import { CollectionReference, DocumentReference, Firestore, QueryDocumentSnapshot, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 
 import { Word, WordProps } from '@core/domain/entities/Word';
 import { Firebase } from '@core/init';
@@ -67,8 +67,17 @@ export class FireStoreWord {
         return word;
     }
 
-    async findAll(): Promise<Word[]> {
-        const docs = await getDocs(this.collectionWords);
+    async findAll({ gamesQuantity, languageFrom, languageTo }: { gamesQuantity: number, languageFrom: string, languageTo: string }): Promise<Word[]> {
+        const docs = await getDocs(
+            query(
+                this.collectionWords,
+                and(
+                    where('originalLanguage', '==', languageFrom),
+                    where('targetLanguage', '==', languageTo),
+                ),
+                limit(gamesQuantity)
+            )
+        );
 
         const words: Word[] = [];
         docs.forEach((doc: QueryDocumentSnapshot) => {

@@ -9,15 +9,14 @@ import { ToastAlert } from "@components/ToastAlert";
 
 import { Language as LanguageEntity } from "@core/domain/entities/Language";
 import { Coutries, ICoutries } from "@core/providers/Countries";
-import { Language as LanguageService } from "@core/services/Language";
+import { useLanguage } from "@core/hooks/Language";
 
 export function Language() {
+  const { set: setLanguage, get: getLanguage, loading } = useLanguage();
   const toast = useToast();
   const navigation = useNavigation();
 
   const coutries: ICoutries[] = Coutries;
-  const languageService = new LanguageService();
-  const [loading, setLoading] = useState<boolean>(true);
   const [from, setFrom] = useState<ICoutries | null>();
   const [to, setTo] = useState<ICoutries | null>();
 
@@ -31,16 +30,14 @@ export function Language() {
   }, []);
 
   const loadLanguages = async () => {
-    const storageLanguage = await languageService.get() as string;
+    const storageLanguage = await getLanguage();
 
     if (!!storageLanguage) {
-      const currentLanguage = new LanguageEntity(JSON.parse(storageLanguage));
-      const currentLanguageProps = currentLanguage.toObject();
+      const currentLanguageProps = storageLanguage.toObject();
 
       setFrom(currentLanguageProps.from);
       setTo(currentLanguageProps.to);
     }
-    setLoading(false);
   }
 
   const save = async () => {
@@ -51,7 +48,7 @@ export function Language() {
           from: from,
         });
 
-        await languageService.set(languageEntity.toObject());
+        setLanguage(languageEntity);
         navigation.goBack();
       } catch (e) {
         toast.show({
