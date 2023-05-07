@@ -35,7 +35,10 @@ export default {
       storageBucket: process.env.STORAGE_BUCKET,
       messagingSenderId: process.env.MESSAGING_SENDER_ID,
       appId: process.env.APP_ID,
-      openIAEndpoint: process.env.OPENIA_ENDPOINT
+      openIAEndpoint: process.env.OPENIA_ENDPOINT,
+      eas: {
+        projectId: "e3e6506d-86d0-4c46-bbd6-37b259c5c598"
+      }
     }
   }
 }
