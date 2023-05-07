@@ -2,9 +2,10 @@ import 'dotenv/config';
 
 export default {
   "expo": {
-    "name": "flash-cards-app",
-    "slug": "flash-cards-app",
+    "name": "flashcardsapp",
+    "slug": "flashcards-app",
     "version": "1.0.0",
+    "scheme": "flashcardsapp",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
