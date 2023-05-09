@@ -1,12 +1,12 @@
 
 import axios from 'axios';
-import Constants from 'expo-constants';
+import { OPENIA_ENDPOINT } from '@env'
 
 import { Firebase } from '@core/init';
 import { TranslationOptionsResponse } from './interface';
 
 export class Suggestions {
-  private readonly OPENIA_ENDPOINT = Constants.manifest.extra.openIAEndpoint;
+  private readonly OPENIA_ENDPOINT = OPENIA_ENDPOINT;
 
   constructor(
     private firebase = Firebase

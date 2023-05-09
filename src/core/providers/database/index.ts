@@ -2,8 +2,8 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-import Constants from 'expo-constants';
 import { IFirebase } from './interface';
+import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } from '@env'
 
 export class Firebase implements IFirebase {
   private app;
@@ -13,13 +13,13 @@ export class Firebase implements IFirebase {
   constructor(
   ) {
     const app = initializeApp({
-      apiKey: Constants.manifest.extra.apiKey,
-      authDomain: Constants.manifest.extra.authDomain,
-      projectId: Constants.manifest.extra.projectId,
-      storageBucket: Constants.manifest.extra.storageBucket,
-      messagingSenderId: Constants.manifest.extra.messagingSenderId,
-      appId: Constants.manifest.extra.appId,
-      databaseURL: Constants.manifest.extra.databaseURL
+      apiKey: API_KEY,
+      authDomain: AUTH_DOMAIN,
+      projectId: PROJECT_ID,
+      storageBucket: STORAGE_BUCKET,
+      messagingSenderId: MESSAGING_SENDER_ID,
+      appId: APP_ID,
+      databaseURL: ''
     });
 
     this.app = app;

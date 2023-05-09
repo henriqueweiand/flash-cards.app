@@ -79,7 +79,7 @@ export function AppRoutes() {
                     name='gameOption'
                     component={GameOptionPage}
                     options={{
-                        animation: 'simple_push'
+                        animation: 'simple_push',
                     }}
                 />
             </Group>

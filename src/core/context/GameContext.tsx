@@ -9,6 +9,7 @@ import { Loading } from '@components/Loading';
 import _ from 'lodash';
 import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '@core/hooks/Language';
+import { Platform } from 'react-native';
 
 export interface GameContextType {
   finish: boolean;
@@ -112,7 +113,7 @@ export function GameProvider({ children, gamesQuantity }: GameProviderProps) {
       {
         loading ? <Loading /> : (
           <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-            <VStack alignItems={'center'} display={"flex"} flexDir={'row'}>
+            <VStack alignItems={'center'} display={"flex"} flexDir={'row'} pt={Platform.OS === "android" ? 5 : 0}>
               <Button
                 variant={'ghost'}
                 onPress={() => handleExit()}
