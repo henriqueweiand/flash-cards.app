@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.rocketseat.event.rsxp"
+      "package": "app.flashcards.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
