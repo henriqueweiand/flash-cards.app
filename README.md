@@ -1,6 +1,7 @@
 # flash-cards.app
 
-Blog post: https://blog.henriquew.com/flash-cards-apps-with-chatgpt
+Blog post: https://medium.com/@henrique.weiand/flash-cards-apps-with-chatgpt-1bf698a2dc30
+
 Demo: https://www.youtube.com/watch?v=zztOW_yS5EU
 
 ## How to run
